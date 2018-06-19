@@ -1,15 +1,22 @@
+import java.util.Calendar;
+
 public class Demo {
-
     public static void main(String[] args) {
-        int a = 1 << 0;
-        int b = 1 << 2;
-        int c = 1 << 3;
-        int d = 1 << 4;
+        int week = 1;
 
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(c);
-        System.out.println(d);
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if (dayOfWeek == 0) {
+            dayOfWeek = 7;
+        }
+        int a = -dayOfWeek + week;
+        calendar.add(Calendar.DATE, -dayOfWeek + week);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
+        System.out.println(calendar.getTime());
+        System.out.println(calendar.getTimeInMillis());
     }
 }
