@@ -1,4 +1,4 @@
-package frameDecoder.fixedLength;
+package netty.frameDecoder.fixedLength;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;

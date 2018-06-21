@@ -1,4 +1,4 @@
-package frameDecoder.lineBase;
+package netty.frameDecoder.lineBase;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

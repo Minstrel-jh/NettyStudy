@@ -1,4 +1,4 @@
-package frameDecoder.delimiterBase;
+package netty.frameDecoder.delimiterBase;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
