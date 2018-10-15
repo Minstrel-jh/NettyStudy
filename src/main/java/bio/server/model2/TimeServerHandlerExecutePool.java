@@ -1,4 +1,4 @@
-package bio.server.asyncNBlockModel;
+package bio.server.model2;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;

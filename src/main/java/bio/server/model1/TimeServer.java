@@ -1,11 +1,14 @@
-package bio.server.asyncNBlockModel;
+package bio.server.model1;
 
-import bio.handler.TimeServerHandler;
+import bio.server.handler.TimeServerHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 同步阻塞模型
+ */
 public class TimeServer {
 
     public static void main(String[] args) throws IOException {
@@ -21,9 +24,6 @@ public class TimeServer {
             server = new ServerSocket(port);
             System.out.println("The time server is start in port:" + port);
             Socket socket = null;
-            TimeServerHandlerExecutePool singleExecutor
-                = new TimeServerHandlerExecutePool(50, 10000); // 创建I/O线程池
-
             while (true) {
                 socket = server.accept(); // 此处会阻塞
                 new Thread(new TimeServerHandler(socket)).start();
