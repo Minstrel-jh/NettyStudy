@@ -1,17 +1,16 @@
-package nio;
+package io2_nio;
 
-public class TimeClient {
-
+public class TimeServer {
     public static void main(String[] args) {
         int port = 8080;
         if (args != null && args.length > 0) {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                // 采用默认值
+                e.printStackTrace();
             }
         }
-
-        new Thread(new TimeClientHandle("127.0.0.1", port), "TimeClient-001").start();
+        MultiplexerTimeServer timeServer = new MultiplexerTimeServer(port);
+        new Thread(timeServer, "NIO-MultiplexerTimeServer-001").start();
     }
 }

@@ -1,6 +1,6 @@
-package bio.server.model2;
+package io1_bio.server.model2;
 
-import bio.server.handler.TimeServerHandler;
+import io1_bio.server.handler.TimeServerHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
