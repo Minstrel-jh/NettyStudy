@@ -1,5 +1,6 @@
 package io1_bio.server.model2;
 
+import io1_bio.server.handler.HandlerThreadPool;
 import io1_bio.server.handler.TimeServerHandler;
 
 import java.io.IOException;
@@ -24,12 +25,12 @@ public class TimeServer {
             server = new ServerSocket(port);
             System.out.println("The time server is start in port:" + port);
             Socket socket = null;
-            TimeServerHandlerExecutePool singleExecutor
-                = new TimeServerHandlerExecutePool(50, 10000); // 创建I/O线程池
+            HandlerThreadPool handlerThreadPool
+                = new HandlerThreadPool(50, 10000); // 创建I/O线程池
 
             while (true) {
                 socket = server.accept(); // 此处会阻塞
-                singleExecutor.execute(new TimeServerHandler(socket));
+                handlerThreadPool.execute(new TimeServerHandler(socket));
             }
         } catch (IOException e) {
             e.printStackTrace();

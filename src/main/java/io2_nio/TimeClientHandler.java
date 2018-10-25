@@ -9,20 +9,22 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-public class TimeClientHandle implements Runnable {
+public class TimeClientHandler implements Runnable {
     private String host;
     private int port;
     private Selector selector;
     private SocketChannel socketChannel;
-    private volatile boolean stop;                                                                                      // volatile 关键字
-                                                                                                                        /**
-                                                                                                                         * 1 保证了不同线程对这个变量进行操作时的可见性，
-                                                                                                                         * 即一个线程修改了某个变量的值，
-                                                                                                                         * 这新值对其他线程来说是立即可见的。
-                                                                                                                         * 2 禁止进行指令重排序。
-                                                                                                                         */
+    /**
+     * volatile 关键字
+     * 1 保证了不同线程对这个变量进行操作时的可见性，
+     * 即一个线程修改了某个变量的值，
+     * 这新值对其他线程来说是立即可见的。
+     * 2 禁止进行指令重排序。
+     */
+    private volatile boolean stop;
 
-    public TimeClientHandle(String host, int port) {
+
+    public TimeClientHandler(String host, int port) {
         this.host = host == null ? "127.0.0.1" : host;
         this.port = port;
 
@@ -46,22 +48,24 @@ public class TimeClientHandle implements Runnable {
         }
         while (!stop) {
             try {
-                selector.select(1000);
-                Set<SelectionKey> selectionKeys = selector.selectedKeys();
-                Iterator<SelectionKey> it = selectionKeys.iterator();
+                System.out.println("select() 阻塞1S...");
+                int keysNum = selector.select(1000);
+                if (keysNum != 0) {
+                    Set<SelectionKey> selectionKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> it = selectionKeys.iterator();
 
-                SelectionKey key = null;
-                while (it.hasNext()) {
-                    key = it.next();
-                    it.remove();
+                    while (it.hasNext()) {
+                        SelectionKey key = it.next();
+                        it.remove();
 
-                    try {
-                        handleInput(key);
-                    } catch (Exception e) {
-                        if (key != null) {
-                            key.cancel();
-                            if (key.channel() != null) {
-                                key.channel().close();
+                        try {
+                            handleInput(key);
+                        } catch (Exception e) {
+                            if (key != null) {
+                                key.cancel();
+                                if (key.channel() != null) {
+                                    key.channel().close();
+                                }
                             }
                         }
                     }
@@ -101,7 +105,7 @@ public class TimeClientHandle implements Runnable {
                     byte[] bytes = new byte[readBuffer.remaining()];
                     readBuffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
-                    System.out.println("Now is : " + body);
+                    System.out.println(body);
                     this.stop = true;
                 } else if (readBytes < 0) {
                     key.cancel();
@@ -114,7 +118,10 @@ public class TimeClientHandle implements Runnable {
     }
 
     private void doConnect() throws IOException {
-        boolean connect = socketChannel.connect(new InetSocketAddress(host, port));                                     // 连接服务器
+        /**
+         * 在非阻塞模式中，且连接在进行中时，会返回false
+         */
+        boolean connect = socketChannel.connect(new InetSocketAddress(host, port));
 
         if (connect) {
             socketChannel.register(selector, SelectionKey.OP_READ);
@@ -125,13 +132,14 @@ public class TimeClientHandle implements Runnable {
     }
 
     private void doWrite(SocketChannel sc) throws IOException {
-        byte[] req = "QUERY TIME ORDER".getBytes();
+        String msg = "QUERY TIME ORDER";
+        byte[] req = msg.getBytes();
         ByteBuffer writerBuffer = ByteBuffer.allocate(req.length);
         writerBuffer.put(req);
-        writerBuffer.flip();                                                                                            // 写之前把指针置到缓冲区顶部
+        writerBuffer.flip();
         sc.write(writerBuffer);
         if (!writerBuffer.hasRemaining()) {
-            System.out.println("Send order 2 server succeed.");
+            System.out.println("客户端发送消息:" + msg);
         }
     }
 

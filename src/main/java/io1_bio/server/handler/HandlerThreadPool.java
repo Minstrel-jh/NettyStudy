@@ -1,15 +1,15 @@
-package io1_bio.server.model2;
+package io1_bio.server.handler;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class TimeServerHandlerExecutePool {
+public class HandlerThreadPool {
 
     private ExecutorService executor;
 
-    public TimeServerHandlerExecutePool(int maxPoolSize, int queueSize) {
+    public HandlerThreadPool(int maxPoolSize, int queueSize) {
         executor = new ThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors(),
             maxPoolSize,
