@@ -29,7 +29,7 @@ public class TimeServer {
                 new Thread(new TimeServerHandler(socket)).start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             if (server != null) {
                 System.out.println("The time server close");

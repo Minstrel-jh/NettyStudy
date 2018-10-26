@@ -39,7 +39,7 @@ public class SubReqClient {
             f.channel().closeFuture().sync();
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             group.shutdownGracefully();
         }
@@ -51,7 +51,7 @@ public class SubReqClient {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
         new SubReqClient().connect("127.0.0.1", port);

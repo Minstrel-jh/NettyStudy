@@ -21,7 +21,7 @@ public class AsyncTimeServerHandler implements Runnable{
             asynchronousServerSocketChannel.bind(new InetSocketAddress(port));
             System.out.println("The Time Server is start in port : " + port);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 
@@ -32,7 +32,7 @@ public class AsyncTimeServerHandler implements Runnable{
         try {
             latch.await();      // 在这儿停顿
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 

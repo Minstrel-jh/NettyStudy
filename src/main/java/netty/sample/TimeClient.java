@@ -43,7 +43,7 @@ public class TimeClient {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
         new TimeClient().connect(port, "127.0.0.1");

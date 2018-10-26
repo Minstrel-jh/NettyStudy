@@ -24,7 +24,7 @@ public class SubReqServerHandler extends ChannelHandlerAdapter {
     
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        cause.printStackTrace(System.out);
         ctx.close();
     }
 }

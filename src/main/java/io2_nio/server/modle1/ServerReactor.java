@@ -1,4 +1,4 @@
-package io2_nio;
+package io2_nio.server.modle1;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,7 +10,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-public class TimeServerHandler implements Runnable {
+public class ServerReactor implements Runnable {
 
     private Selector selector;  // 多路复用器
 
@@ -18,10 +18,11 @@ public class TimeServerHandler implements Runnable {
 
     private volatile boolean stop;
 
-    public TimeServerHandler(int port) {
+    public ServerReactor(int port) {
         try {
             selector = Selector.open();
             serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024); // backlog: 请求链接队列的最大长度
 
             /**
              * 与Selector一起使用时，Channel必须处于非阻塞模式下
@@ -32,7 +33,6 @@ public class TimeServerHandler implements Runnable {
              *      如果没有连接，accept()返回null。非阻塞模式一般和Selector结合使用。
              */
             serverSocketChannel.configureBlocking(false);
-            serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024); // backlog: 请求链接队列的最大长度
 
             /**
              * 将ServerSocketChannel注册到Selector，监听ACCEPT事件
@@ -44,7 +44,7 @@ public class TimeServerHandler implements Runnable {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("服务器监听：OP_ACCEPT; port:" + port);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.exit(1);
         }
     }
@@ -81,7 +81,7 @@ public class TimeServerHandler implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
                 if (key != null) {
                     key.cancel();
                 }
@@ -92,7 +92,7 @@ public class TimeServerHandler implements Runnable {
             try {
                 selector.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
     }
@@ -116,7 +116,7 @@ public class TimeServerHandler implements Runnable {
                  */
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
                 int readBytes = sc.read(readBuffer);
-                if (readBytes >= 0) {
+                if (readBytes > 0) {
                     /**
                      * 调用flip()之后，读/写指针position指到缓冲区头部，
                      * limit在读模式时，是之前写模式的position所在位置
@@ -126,7 +126,7 @@ public class TimeServerHandler implements Runnable {
                     readBuffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
 
-                    System.out.println("client msg:" + body);
+                    System.out.println("客户端消息：" + body);
 
                     doWrite(sc, "服务器已经收到客户端消息");
                 } else if (readBytes < 0) {

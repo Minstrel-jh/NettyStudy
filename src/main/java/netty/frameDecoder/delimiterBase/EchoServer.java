@@ -40,7 +40,7 @@ public class EchoServer {
             ChannelFuture f = b.bind(port).sync();
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -53,7 +53,7 @@ public class EchoServer {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
         new EchoServer().bind(port);

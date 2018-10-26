@@ -41,7 +41,7 @@ public class SubReqServer {
             ChannelFuture f = b.bind(port).sync();
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -54,7 +54,7 @@ public class SubReqServer {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
         new SubReqServer().bind(port);

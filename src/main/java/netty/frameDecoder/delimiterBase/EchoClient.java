@@ -34,7 +34,7 @@ public class EchoClient {
             ChannelFuture f = b.connect(host, port).sync();
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             group.shutdownGracefully();
         }
@@ -46,7 +46,7 @@ public class EchoClient {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
         new EchoClient().connect("127.0.0.1", port);

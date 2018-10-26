@@ -2,6 +2,10 @@ import java.util.Calendar;
 
 public class Demo {
     public static void main(String[] args) {
+        fun2();
+    }
+
+    static void fun1() {
         int week = 1;
 
         Calendar calendar = Calendar.getInstance();
@@ -18,5 +22,10 @@ public class Demo {
 
         System.out.println(calendar.getTime());
         System.out.println(calendar.getTimeInMillis());
+
+    }
+
+    static void fun2() {
+        System.out.println(1 & 0);
     }
 }

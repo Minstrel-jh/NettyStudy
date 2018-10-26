@@ -1,4 +1,4 @@
-package io2_nio;
+package io2_nio.client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,11 +9,14 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-public class TimeClientHandler implements Runnable {
+public class ClientReactor implements Runnable {
     private String host;
     private int port;
     private Selector selector;
     private SocketChannel socketChannel;
+
+    private int count = 0;
+    private long time = 0;
     /**
      * volatile 关键字
      * 1 保证了不同线程对这个变量进行操作时的可见性，
@@ -24,7 +27,7 @@ public class TimeClientHandler implements Runnable {
     private volatile boolean stop;
 
 
-    public TimeClientHandler(String host, int port) {
+    public ClientReactor(String host, int port) {
         this.host = host == null ? "127.0.0.1" : host;
         this.port = port;
 
@@ -33,7 +36,7 @@ public class TimeClientHandler implements Runnable {
             socketChannel = SocketChannel.open();
             socketChannel.configureBlocking(false);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.exit(1);
         }
     }
@@ -43,7 +46,7 @@ public class TimeClientHandler implements Runnable {
         try {
             doConnect();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.exit(1);
         }
         while (!stop) {
@@ -71,7 +74,7 @@ public class TimeClientHandler implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
                 System.exit(1);
             }
         }
@@ -81,7 +84,7 @@ public class TimeClientHandler implements Runnable {
             try {
                 selector.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
     }
@@ -90,6 +93,7 @@ public class TimeClientHandler implements Runnable {
         if (key.isValid()) {
             SocketChannel sc = (SocketChannel) key.channel();
             if (key.isConnectable()) {
+                time = System.currentTimeMillis();
                 if (sc.finishConnect()) {
                     sc.register(selector, SelectionKey.OP_READ);
                     doWrite(sc);
@@ -106,7 +110,13 @@ public class TimeClientHandler implements Runnable {
                     readBuffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
                     System.out.println(body);
-                    this.stop = true;
+                    count++;
+                    if (count == 10000) {
+                        System.out.println("所用时间：" + (System.currentTimeMillis() - time));
+                        this.stop = true;
+                    } else {
+                        doWrite(sc);
+                    }
                 } else if (readBytes < 0) {
                     key.cancel();
                     sc.close();
@@ -119,7 +129,7 @@ public class TimeClientHandler implements Runnable {
 
     private void doConnect() throws IOException {
         /**
-         * 在非阻塞模式中，且连接在进行中时，会返回false
+         * 在非阻塞模式中，会返回false
          */
         boolean connect = socketChannel.connect(new InetSocketAddress(host, port));
 
@@ -132,7 +142,7 @@ public class TimeClientHandler implements Runnable {
     }
 
     private void doWrite(SocketChannel sc) throws IOException {
-        String msg = "QUERY TIME ORDER";
+        String msg = "QUERY:" + (count + 1);
         byte[] req = msg.getBytes();
         ByteBuffer writerBuffer = ByteBuffer.allocate(req.length);
         writerBuffer.put(req);

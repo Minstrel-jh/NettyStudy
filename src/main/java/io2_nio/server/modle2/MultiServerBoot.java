@@ -1,16 +1,16 @@
-package io2_nio;
+package io2_nio.server.modle2;
 
-public class TimeServer {
+public class MultiServerBoot {
     public static void main(String[] args) {
         int port = 8080;
         if (args != null && args.length > 0) {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
-        TimeServerHandler timeServerHandler = new TimeServerHandler(port);
-        new Thread(timeServerHandler, "TimeServer").start();
+        MultiServerReactor multiServerReactor = new MultiServerReactor(port);
+        new Thread(multiServerReactor, "MultiServerReactor").start();
     }
 }

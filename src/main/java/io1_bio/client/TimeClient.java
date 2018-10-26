@@ -30,7 +30,7 @@ public class TimeClient {
             String resp = in.readLine();
             System.out.println("Now is : " + resp);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         } finally {
             if (out != null) {
                 out.close();
@@ -40,7 +40,7 @@ public class TimeClient {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(System.out);
                 }
                 in = null;
             }
@@ -48,7 +48,7 @@ public class TimeClient {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(System.out);
                 }
                 socket = null;
             }
